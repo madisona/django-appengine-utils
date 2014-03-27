@@ -7,12 +7,13 @@ REQUIREMENTS = (
 
 setup(
     name="django-appengine-utils",
-    version="0.0.1",
+    version="0.0.2",
     author="Aaron Madison",
     description="Helpers for working with Django and Google App Engine.",
     long_description=open('README', 'r').read(),
     url="https://github.com/madisona/django-appengine-utils",
     packages=find_packages(exclude=["example"]),
+    py_modules=["memcache"],
     install_requires=REQUIREMENTS,
     zip_safe=False,
     classifiers = [
