@@ -7,7 +7,7 @@ REQUIREMENTS = (
 
 setup(
     name="django-appengine-utils",
-    version="0.0.2",
+    version="0.0.3",
     author="Aaron Madison",
     description="Helpers for working with Django and Google App Engine.",
     long_description=open('README', 'r').read(),
