@@ -32,10 +32,9 @@ class EmailBackend(BaseEmailBackend):
         """
         Creates and returns App Engine EmailMessage class from message.
         """
-        gmsg = aeemail.EmailMessage(sender=message.from_email,
-                                    to=message.to,
-                                    subject=message.subject,
-                                    body=message.body)
+        gmsg = aeemail.EmailMessage(
+            sender=message.from_email, to=message.to, subject=message.subject, body=message.body
+        )
         if message.extra_headers.get('Reply-To', None):
             gmsg.reply_to = message.extra_headers['Reply-To']
         if message.cc:
@@ -47,8 +46,7 @@ class EmailBackend(BaseEmailBackend):
             attachments = []
             for attachment in message.attachments:
                 if isinstance(attachment, MIMEBase):
-                    attachments.append((attachment.get_filename(),
-                                        attachment.get_payload(decode=True)))
+                    attachments.append((attachment.get_filename(), attachment.get_payload(decode=True)))
                 else:
                     attachments.append((attachment[0], attachment[1]))
             gmsg.attachments = attachments
@@ -84,10 +82,7 @@ class EmailBackend(BaseEmailBackend):
         from google.appengine.ext import deferred
         from django.conf import settings
         queue_name = getattr(settings, 'EMAIL_QUEUE_NAME', 'default')
-        deferred.defer(_send_deferred,
-                       message,
-                       fail_silently=self.fail_silently,
-                       _queue=queue_name)
+        deferred.defer(_send_deferred, message, fail_silently=self.fail_silently, _queue=queue_name)
 
 
 class AsyncEmailBackend(EmailBackend):

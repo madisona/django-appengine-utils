@@ -1,10 +1,7 @@
-
-
 # EMAIL_BACKEND = 'appengine_utils.mail.AsyncEmailBackend'  # use on production
 EMAIL_BACKEND = 'appengine_utils.mail.EmailBackend'
 # Specify a queue name for the async. email backend.
 EMAIL_QUEUE_NAME = 'default'
-
 
 PREPARE_UPLOAD_BACKEND = 'appengine_utils.storage.prepare_upload'
 SERVE_FILE_BACKEND = 'appengine_utils.storage.serve_file'

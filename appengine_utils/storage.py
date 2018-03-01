@@ -34,8 +34,7 @@ def serve_file(request, file, save_as, content_type, **kwargs):
     elif hasattr(file, 'blobstore_info'):
         blobkey = file.blobstore_info.key()
     else:
-        raise ValueError("The provided file can't be served via the "
-                         "Google App Engine Blobstore.")
+        raise ValueError("The provided file can't be served via the " "Google App Engine Blobstore.")
     response = HttpResponse(content_type=content_type)
     response[BLOB_KEY_HEADER] = str(blobkey)
     response['Accept-Ranges'] = 'bytes'
@@ -43,8 +42,7 @@ def serve_file(request, file, save_as, content_type, **kwargs):
     if http_range is not None:
         response[BLOB_RANGE_HEADER] = http_range
     if save_as:
-        response['Content-Disposition'] = smart_str(
-            u'attachment; filename=%s' % save_as)
+        response['Content-Disposition'] = smart_str(u'attachment; filename=%s' % save_as)
     if file.size is not None:
         response['Content-Length'] = file.size
     return response
@@ -65,8 +63,9 @@ class BlobstoreStorage(Storage):
             data = content.blobstore_info
         elif isinstance(content, File):
             guessed_type = mimetypes.guess_type(name)[0]
-            file_name = files.blobstore.create(mime_type=guessed_type or 'application/octet-stream',
-                                               _blobinfo_uploaded_filename=name)
+            file_name = files.blobstore.create(
+                mime_type=guessed_type or 'application/octet-stream', _blobinfo_uploaded_filename=name
+            )
 
             with files.open(file_name, 'a') as f:
                 for chunk in content.chunks():
@@ -76,8 +75,10 @@ class BlobstoreStorage(Storage):
 
             data = files.blobstore.get_blob_key(file_name)
         else:
-            raise ValueError("The App Engine storage backend only supports "
-                             "BlobstoreFile instances or File instances.")
+            raise ValueError(
+                "The App Engine storage backend only supports "
+                "BlobstoreFile instances or File instances."
+            )
 
         if isinstance(data, (BlobInfo, BlobKey)):
             # We change the file name to the BlobKey's str() value.
@@ -85,10 +86,12 @@ class BlobstoreStorage(Storage):
                 data = data.key()
             return '%s/%s' % (data, name.lstrip('/'))
         else:
-            raise ValueError("The App Engine Blobstore only supports "
-                             "BlobInfo values. Data can't be uploaded "
-                             "directly. You have to use the file upload "
-                             "handler.")
+            raise ValueError(
+                "The App Engine Blobstore only supports "
+                "BlobInfo values. Data can't be uploaded "
+                "directly. You have to use the file upload "
+                "handler."
+            )
 
     def delete(self, name):
         delete(self._get_key(name))
@@ -120,12 +123,15 @@ class BlobstoreStorage(Storage):
     def _get_blobinfo(self, name):
         return BlobInfo.get(self._get_key(name))
 
+
 class DevBlobstoreStorage(BlobstoreStorage):
+
     def url(self, name):
         try:
             return super(DevBlobstoreStorage, self).url(name)
         except BlobKeyRequiredError:
             return urlparse.urljoin(settings.MEDIA_URL, filepath_to_uri(name))
+
 
 class BlobstoreFile(File):
 
@@ -176,9 +182,7 @@ class BlobstoreFileUploadHandler(FileUploadHandler):
         if not self.active:
             return
 
-        return BlobstoreUploadedFile(
-            blobinfo=BlobInfo(self.blobkey),
-            charset=self.charset)
+        return BlobstoreUploadedFile(blobinfo=BlobInfo(self.blobkey), charset=self.charset)
 
 
 class BlobstoreUploadedFile(UploadedFile):
@@ -188,8 +192,8 @@ class BlobstoreUploadedFile(UploadedFile):
 
     def __init__(self, blobinfo, charset):
         super(BlobstoreUploadedFile, self).__init__(
-            BlobReader(blobinfo.key()), blobinfo.filename,
-            blobinfo.content_type, blobinfo.size, charset)
+            BlobReader(blobinfo.key()), blobinfo.filename, blobinfo.content_type, blobinfo.size, charset
+        )
         self.blobstore_info = blobinfo
 
     def open(self, mode=None):
